@@ -21,10 +21,9 @@ async def on_message(message):
     # print(message.content)
     if message.author == bot.user:
         return
-    
     if (message.content[0:4]) == "!log":
-        if message.content[6] != "#":
-            await message.channel.send('This is not a valid channel please try again.')
+        if message.content[6] != "#" or len(message.content) != 27:
+            await message.channel.send('This is not a valid channel, please try again.')
             return 
         log_channel = message.content[7:-1]
         config[message.guild.id] = log_channel
