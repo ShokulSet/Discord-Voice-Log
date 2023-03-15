@@ -18,3 +18,4 @@ This command will tell set your log channel.
 - Modify to emblemed message
 - Switching VC will log too
 - Finishing exclude
+- Also finishing this readme.md
