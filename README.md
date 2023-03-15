@@ -16,3 +16,4 @@ This command will tell set your log channel.
 
 - Add excluding room
 - Modify to emblemed message
+- Switching VC will log too
