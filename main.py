@@ -1,5 +1,11 @@
 import discord
 import json
+from dotenv import load_dotenv
+import os
+import atexit
+
+load_dotenv()
+bot_token = os.getenv('bot_token')
 
 #Open the config file
 with open("bot_config.json","rt") as r:
@@ -8,8 +14,6 @@ with open("bot_config.json","rt") as r:
 intents = discord.Intents.default()
 intents.message_content = True
 bot = discord.Client(intents=intents)
-
-bot_token = config["bot_token"]
 
 @bot.event
 async def on_ready():
@@ -26,7 +30,7 @@ async def on_message(message):
             await message.channel.send('This is not a valid channel, please try again.')
             return 
         log_channel = message.content[7:-1]
-        config[message.guild.id] = log_channel
+        config.update({message.guild.id: log_channel}) 
         temp = json.dumps(config, indent=4)
         with open("bot_config.json","wt") as w:
             w.write(temp)
@@ -34,6 +38,12 @@ async def on_message(message):
         channel = bot.get_channel(int(log_channel))
         await channel.send('For now on, I will send VC log here')
 
+    if (message.content) == "test":
+        print(config)
+        with open("bot_config.json","rt") as r:
+            con = json.load(r)
+        print(con)
+ 
     if message.content.startswith("!chelp"):
         await message.channel.send('Hello this is Discord bot made by Shokul#3557 \nTo set the log channel up, simply type : \n > !log #CHANNEL_NAME \n\n If you have any suggestion feel free to contact me.')
 
@@ -54,4 +64,12 @@ async def on_voice_state_update(member, before, after):
     else:
         print(f"{member.name} did something else")
 
+def exit_handler():
+    print(config)
+    with open("bot_config.json","wt") as w:
+        temp = json.dumps(config, indent=4)
+        w.write(temp)
+    print('Bot is closing successfully')
+
+atexit.register(exit_handler)
 bot.run(bot_token)
