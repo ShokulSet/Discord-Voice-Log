@@ -6,17 +6,18 @@ import atexit
 
 load_dotenv()
 bot_token = os.getenv('bot_token')
+TIPS =   '''Hello this is Discord bot made by Shokul#3557
+To set the log channel up, simply type :
+> !log #CHANNEL_NAME
+To set the excluding channel up, simply type :
+> !exclude #!VC_NAME
+If you have any suggestion feel free to contact me.'''
 
 #Open the config file
 with open("bot_config.json","rt") as r:
     config = json.load(r)
 with open("exclusion.json","rt") as r:
     exclude = json.load(r)
-
-TIPS =   '''Hello this is Discord bot made by Shokul#3557
-To set the log channel up, simply type :
-> !log #CHANNEL_NAME
-If you have any suggestion feel free to contact me.'''
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -44,7 +45,7 @@ async def on_message(message):
             w.write(temp)
         await message.reply(f'Ok, I will start the VC log at <#{log_channel}>', mention_author=False)
         channel = bot.get_channel(int(log_channel))
-        await channel.send('For now on, I will send VC log here')
+        await channel.send('Form now on, I will send VC log here')
 
     if (message.content[0:8]) == "!exclude":
         if message.content[10] != "#" or len(message.content) != 31:
@@ -60,17 +61,22 @@ async def on_message(message):
     if message.content.startswith("!chelp"):
         await message.reply(TIPS, mention_author=False)
 
+
 @bot.event
 async def on_voice_state_update(member, before, after):
 
     # print(f"Member : {member.name} \n Before : {before} \n After : {after} \n")
-    # with open("exclusion.json","rt") as r:
-    #     exclude = json.load(r)
+    with open("exclusion.json","rt") as r:
+        exclude = json.load(r)
+    exclude_id = exclude[str(member.guild.id)]
 
     with open("bot_config.json","rt") as r:
         config = json.load(r)
     channel_id = config[str(member.guild.id)]
     channel = bot.get_channel(int(channel_id))
+
+    if (before.channel == exclude_id or after.channel == exclude_id):
+        return
 
     if (before.channel == None and after.channel != None):
         # print(f"{member.name} joined {after.channel.name}")
@@ -78,6 +84,8 @@ async def on_voice_state_update(member, before, after):
     elif (before.channel != None and after.channel == None):
         # print(f"{member.name} left {before.channel.name}")
         await channel.send(f"{member.name} left {before.channel.name}")
+    elif (before.channel != None and after.channel != None):
+        await channel.send(f"{member.name} moved from {before.channel.name} to {after.channel.name}")
     else:
         print(f"{member.name} did something else")
 
