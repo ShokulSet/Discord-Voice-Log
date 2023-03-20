@@ -66,17 +66,21 @@ async def on_message(message):
 async def on_voice_state_update(member, before, after):
 
     # print(f"Member : {member.name} \n Before : {before} \n After : {after} \n")
-    with open("exclusion.json","rt") as r:
-        exclude = json.load(r)
-    exclude_id = exclude[str(member.guild.id)]
-
+    try:
+        with open("exclusion.json","rt") as r:
+            exclude = json.load(r)
+        exclude_id = exclude[str(member.guild.id)]
+        if (before.channel == exclude_id or after.channel == exclude_id):
+            return
+    except:
+        pass
+    
     with open("bot_config.json","rt") as r:
         config = json.load(r)
     channel_id = config[str(member.guild.id)]
     channel = bot.get_channel(int(channel_id))
 
-    if (before.channel == exclude_id or after.channel == exclude_id):
-        return
+
 
     if (before.channel == None and after.channel != None):
         # print(f"{member.name} joined {after.channel.name}")
