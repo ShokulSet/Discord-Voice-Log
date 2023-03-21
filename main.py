@@ -80,15 +80,13 @@ async def on_voice_state_update(member, before, after):
     channel_id = config[str(member.guild.id)]
     channel = bot.get_channel(int(channel_id))
 
-
-
     if (before.channel == None and after.channel != None):
         # print(f"{member.name} joined {after.channel.name}")
         await channel.send(f"{member.name} joined {after.channel.name}")
     elif (before.channel != None and after.channel == None):
         # print(f"{member.name} left {before.channel.name}")
         await channel.send(f"{member.name} left {before.channel.name}")
-    elif (before.channel != None and after.channel != None):
+    elif (before.channel != None and after.channel != None and before.deaf == after.deaf and before.mute == after.mute and before.self_deaf == after.self_deaf and before.self_mute == after.self_mute and before.self_stream == after.self_stream and before.self_video == after.self_video and before.afk == after.afk):
         await channel.send(f"{member.name} moved from {before.channel.name} to {after.channel.name}")
     else:
         print(f"{member.name} did something else")
