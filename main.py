@@ -29,8 +29,6 @@ bot_token = os.getenv('bot_token')
 TIPS =   '''Hello this is Discord bot made by Shokul#3557
 To set the log channel up, simply type :
 > !log #CHANNEL_NAME
-To set the excluding channel up, simply type :
-> !exclude #!VC_NAME
 If you have any suggestion feel free to contact me.'''
 
 #Open the config file
@@ -67,17 +65,6 @@ async def on_message(message):
         channel = bot.get_channel(int(log_channel))
         await channel.send('Form now on, I will send VC log here')
 
-    if (message.content[0:8]) == "!exclude":
-        if message.content[10] != "#" or len(message.content) != 31:
-            await message.reply('This is not a valid channel, please try again.', mention_author=False)
-            return
-        exclude_channel = message.content[11:-1]
-        exclude.update({message.guild.id: exclude_channel})
-        temp = json.dumps(exclude, indent=4)
-        with open("exclusion.json","wt") as w:
-            w.write(temp)
-        await message.reply(f'Ok, I will no longer send log from <#{exclude_channel}>', mention_author=False)
-
     if message.content.startswith("!chelp"):
         await message.reply(TIPS, mention_author=False)
 
@@ -85,15 +72,6 @@ async def on_message(message):
 async def on_voice_state_update(member, before, after):
 
     # print(f"Member : {member.name} \n Before : {before} \n After : {after} \n")
-    try:
-        with open("exclusion.json","rt") as r:
-            exclude = json.load(r)
-        exclude_id = exclude[str(member.guild.id)]
-        if (before.channel == exclude_id or after.channel == exclude_id):
-            return
-    except:
-        pass
-    
     with open("bot_config.json","rt") as r:
         config = json.load(r)
     channel_id = config[str(member.guild.id)]
