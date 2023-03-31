@@ -3,6 +3,26 @@ import json
 from dotenv import load_dotenv
 import os
 import atexit
+import time
+
+
+def embed_join(member,after,before):
+    embed=discord.Embed(title=member.name, description=f"📥 **{member.name}** joined **{after.channel.name}**", color=0x00db49)
+    embed.set_thumbnail(url=member.display_avatar)
+    embed.set_footer(text= time.ctime())
+    return embed
+
+def embed_leave(member,after,before):
+    embed=discord.Embed(title=member.name, description=f"📤 **{member.name}** left **{before.channel.name}**", color=0xe00000)
+    embed.set_thumbnail(url=member.display_avatar)
+    embed.set_footer(text= time.ctime())
+    return embed
+
+def embed_move(member,after,before):
+    embed=discord.Embed(title=member.name, description=f"🔁 **{member.name}** moved from **{before.channel.name}** to **{after.channel.name}**", color=0x00c8d6)
+    embed.set_thumbnail(url=member.display_avatar)
+    embed.set_footer(text= time.ctime())
+    return embed
 
 load_dotenv()
 bot_token = os.getenv('bot_token')
@@ -61,7 +81,6 @@ async def on_message(message):
     if message.content.startswith("!chelp"):
         await message.reply(TIPS, mention_author=False)
 
-
 @bot.event
 async def on_voice_state_update(member, before, after):
 
@@ -81,13 +100,16 @@ async def on_voice_state_update(member, before, after):
     channel = bot.get_channel(int(channel_id))
 
     if (before.channel == None and after.channel != None):
-        # print(f"{member.name} joined {after.channel.name}")
-        await channel.send(f"{member.name} joined {after.channel.name}")
+        print(f"{member.name} joined {after.channel.name}")
+        # await channel.send(f"{member.name} joined {after.channel.name}")
+        await channel.send(embed=embed_join(member,after,before))
     elif (before.channel != None and after.channel == None):
-        # print(f"{member.name} left {before.channel.name}")
-        await channel.send(f"{member.name} left {before.channel.name}")
+        print(f"{member.name} left {before.channel.name}")
+        # await channel.send(f"{member.name} left {before.channel.name}")
+        await channel.send(embed=embed_leave(member,after,before))
     elif (before.channel != None and after.channel != None and before.deaf == after.deaf and before.mute == after.mute and before.self_deaf == after.self_deaf and before.self_mute == after.self_mute and before.self_stream == after.self_stream and before.self_video == after.self_video and before.afk == after.afk):
-        await channel.send(f"{member.name} moved from {before.channel.name} to {after.channel.name}")
+        # await channel.send(f"{member.name} moved from {before.channel.name} to {after.channel.name}")
+        await channel.send(embed=embed_move(member,after,before))
     else:
         print(f"{member.name} did something else")
 
