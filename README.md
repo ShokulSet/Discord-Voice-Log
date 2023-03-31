@@ -11,11 +11,3 @@ This command will tell you most of this bot command.
 > !log #YOUR_CHANNEL
 
 This command will tell set your log channel.
-
-## TO DO
-
-- Add excluding room
-- Modify to emblemed message
-- Switching VC will log too
-- Finishing exclude
-- Also finishing this readme.md
