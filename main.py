@@ -34,8 +34,6 @@ If you have any suggestion feel free to contact me.'''
 #Open the config file
 with open("bot_config.json","rt") as r:
     config = json.load(r)
-with open("exclusion.json","rt") as r:
-    exclude = json.load(r)
 
 intents = discord.Intents.default()
 intents.message_content = True
