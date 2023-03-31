@@ -76,11 +76,11 @@ async def on_voice_state_update(member, before, after):
     channel = bot.get_channel(int(channel_id))
 
     if (before.channel == None and after.channel != None):
-        print(f"{member.name} joined {after.channel.name}")
+        # print(f"{member.name} joined {after.channel.name}")
         # await channel.send(f"{member.name} joined {after.channel.name}")
         await channel.send(embed=embed_join(member,after,before))
     elif (before.channel != None and after.channel == None):
-        print(f"{member.name} left {before.channel.name}")
+        # print(f"{member.name} left {before.channel.name}")
         # await channel.send(f"{member.name} left {before.channel.name}")
         await channel.send(embed=embed_leave(member,after,before))
     elif (before.channel != None and after.channel != None and before.deaf == after.deaf and before.mute == after.mute and before.self_deaf == after.self_deaf and before.self_mute == after.self_mute and before.self_stream == after.self_stream and before.self_video == after.self_video and before.afk == after.afk):
@@ -91,15 +91,11 @@ async def on_voice_state_update(member, before, after):
 
 def exit_handler():
     print(config)
-    print(exclude)
     
     with open("bot_config.json","wt") as w:
         temp = json.dumps(config, indent=4)
         w.write(temp)
 
-    with open("exclusion.json","wt") as w:
-        temp = json.dumps(exclude, indent=4)
-        w.write(temp)
     print('Bot is closing successfully')
 
 atexit.register(exit_handler)
