@@ -15,3 +15,4 @@ This command will tell set your log channel.
 ## reset.py
 
 Script use to revert the bot_config.json to its original state.
+
